@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HACCPTrack.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240610190725_initialMigration")]
+    [Migration("20240610191746_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
