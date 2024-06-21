@@ -8,19 +8,17 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-AddAuthentication();
+var configuration = builder.Configuration;
+
+AddAuthentication(configuration);
 AddIdentity();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();     
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 ConfigureServices();
@@ -52,18 +50,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// new endpoiint to check, if server status is ok.
+// new endpoint to check if server status is ok.
 app.MapGet("/status", () => Results.Ok(new { status = "ok" }));
-app.Run();
 
+app.Run();
 
 void ConfigureServices()
 {
     builder.Services.AddDbContext<DataContext>();
 }
 
-void AddAuthentication()
+void AddAuthentication(IConfiguration configuration)
 {
+    var jwtSettings = configuration.GetSection("JwtSettings");
+    var secretKey = jwtSettings.GetValue<string>("SecretKey");
+
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -78,10 +79,8 @@ void AddAuthentication()
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = "apiWithAuthBackend",
                 ValidAudience = "apiWithAuthBackend",
-
-                // Use the helper method to ensure a 32-byte key
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    PadKey(Encoding.UTF8.GetBytes("!SomethingSecret!"), 32)
+                    PadKey(Encoding.UTF8.GetBytes(secretKey), 32)
                 ),
             };
         });
