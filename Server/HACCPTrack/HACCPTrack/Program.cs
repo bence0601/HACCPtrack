@@ -1,42 +1,45 @@
 using HACCPTrack.Data;
 using HACCPTrack.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration;
+// Konfiguráció betöltése
+builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 
-AddAuthentication(configuration);
-AddIdentity();
+// Identity konfiguráció hozzáadása
+AddAuthentication(builder.Configuration);
+AddIdentity(builder.Services);
 
-// Add services to the container.
+// Szolgáltatások hozzáadása a konténerhez
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSwaggerGen();
+
 ConfigureServices();
-ConfigureSwagger();
+
+// Swagger konfiguráció
+ConfigureSwagger(builder.Services);
+
 
 var app = builder.Build();
 
-AddRoles();
+// Szerepkörök létrehozása
+AddRoles(app);
 
-// Configure CORS
+// CORS konfiguráció
 app.UseCors(builder =>
 {
-    builder.AllowAnyOrigin(); // You can replace this with specific origins
+    builder.AllowAnyOrigin();
     builder.AllowAnyHeader();
     builder.AllowAnyMethod();
 });
 
-// Configure the HTTP request pipeline.
+// HTTP kérés pipeline konfigurálása
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,12 +48,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Autentikáció és autorizáció használata
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// new endpoint to check if server status is ok.
+// Új végpont a szerver állapotának ellenõrzésére
 app.MapGet("/status", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
@@ -58,8 +62,10 @@ app.Run();
 void ConfigureServices()
 {
     builder.Services.AddDbContext<DataContext>();
-}
 
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
+}
 void AddAuthentication(IConfiguration configuration)
 {
     var jwtSettings = configuration.GetSection("JwtSettings");
@@ -86,9 +92,9 @@ void AddAuthentication(IConfiguration configuration)
         });
 }
 
-void AddIdentity()
+void AddIdentity(IServiceCollection services)
 {
-    builder.Services
+    services
         .AddIdentityCore<IdentityUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
@@ -103,9 +109,9 @@ void AddIdentity()
         .AddEntityFrameworkStores<DataContext>();
 }
 
-void ConfigureSwagger()
+void ConfigureSwagger(IServiceCollection services)
 {
-    builder.Services.AddSwaggerGen(option =>
+    services.AddSwaggerGen(option =>
     {
         option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
         option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -134,7 +140,7 @@ void ConfigureSwagger()
     });
 }
 
-void AddRoles()
+void AddRoles(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -154,45 +160,6 @@ async Task CreateAdminRole(RoleManager<IdentityRole> roleManager)
 async Task CreateUserRole(RoleManager<IdentityRole> roleManager)
 {
     await roleManager.CreateAsync(new IdentityRole("User"));
-}
-
-void AddAdmin()
-{
-    var tAdmin = CreateAdminIfNotExists();
-    tAdmin.Wait();
-}
-
-async Task CreateAdminIfNotExists()
-{
-    using var scope = app.Services.CreateScope();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var adminDB = await userManager.FindByEmailAsync("admin@admin.com");
-
-    if (adminDB == null)
-    {
-        var admin = new IdentityUser { UserName = "admin", Email = "admin@admin.com" };
-        var adminCreated = await userManager.CreateAsync(admin, "admin123");
-
-        if (adminCreated.Succeeded)
-        {
-            var roleAssignment = await userManager.AddToRoleAsync(admin, "Admin");
-            if (roleAssignment.Succeeded)
-            {
-                // Log success
-                Console.WriteLine("Admin user and role assignment succeeded.");
-            }
-            else
-            {
-                // Log role assignment failure
-                Console.WriteLine("Failed to assign the Admin role to the user.");
-            }
-        }
-        else
-        {
-            // Log user creation failure
-            Console.WriteLine("Failed to create the admin user.");
-        }
-    }
 }
 
 byte[] PadKey(byte[] key, int length)
