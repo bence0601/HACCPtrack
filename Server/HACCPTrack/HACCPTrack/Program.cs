@@ -17,14 +17,14 @@ AddIdentity(builder.Services);
 
 // Szolgáltatások hozzáadása a konténerhez
 builder.Services.AddControllers();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+ConfigureServices();
 
 // Swagger konfiguráció
 ConfigureSwagger(builder.Services);
 
-// DbContext hozzáadása
-builder.Services.AddDbContext<DataContext>();
 
 var app = builder.Build();
 
@@ -59,6 +59,13 @@ app.MapGet("/status", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
 
+void ConfigureServices()
+{
+    builder.Services.AddDbContext<DataContext>();
+
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
+}
 void AddAuthentication(IConfiguration configuration)
 {
     var jwtSettings = configuration.GetSection("JwtSettings");
