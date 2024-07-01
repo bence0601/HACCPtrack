@@ -1,5 +1,6 @@
 using HACCPTrack.Data;
 using HACCPTrack.Services.Authentication;
+using HACCPTrack.Services.InviteLinks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -16,7 +17,6 @@ AddAuthentication(builder.Configuration);
 AddIdentity(builder.Services);
 
 // Szolgáltatások hozzáadása a konténerhez
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -63,8 +63,18 @@ void ConfigureServices()
 {
     builder.Services.AddDbContext<DataContext>();
 
+    // Szolgáltatások regisztrálása
+    builder.Services.AddScoped<IInviteService, InviteService>();
+    builder.Services.AddScoped<InviteService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        .AddEntityFrameworkStores<DataContext>()
+        .AddDefaultTokenProviders();
+
+    // Controllers regisztrálása
+    builder.Services.AddControllers();
+
 }
 void AddAuthentication(IConfiguration configuration)
 {
