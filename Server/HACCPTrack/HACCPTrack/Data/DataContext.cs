@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HACCPTrack.Models.Invites;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,8 @@ namespace HACCPTrack.Data
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Invite> Invites { get; set; }
+
     }
 }
