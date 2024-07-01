@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using HACCPTrack.Models.Invites;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HACCPTrack.Data
 {
     public class DataContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
+        private readonly IConfiguration _configuration;
 
-
-
+        public DataContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                "Server=localhost,1433;Database=HACCPTrack;User Id=sa;Password=yourStrong(!)Password;Encrypt=false;Encrypt=True;TrustServerCertificate=True;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = _configuration.GetConnectionString("DataBaseConnection");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
         }
+
+        public DbSet<Invite> Invites { get; set; }
+
     }
 }

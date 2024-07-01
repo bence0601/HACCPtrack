@@ -1,42 +1,45 @@
 using HACCPTrack.Data;
+using HACCPTrack.Services.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 using System.Text;
-
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-AddAuthentication();
-AddIdentity();
+// Konfiguráció betöltése
+builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 
-// Add services to the container.
+// Identity konfiguráció hozzáadása
+AddAuthentication(builder.Configuration);
+AddIdentity(builder.Services);
 
+// Szolgáltatások hozzáadása a konténerhez
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 ConfigureServices();
-ConfigureSwagger();
+
+// Swagger konfiguráció
+ConfigureSwagger(builder.Services);
+
 
 var app = builder.Build();
 
-AddRoles();
+// Szerepkörök létrehozása
+AddRoles(app);
 
-// Configure CORS
+// CORS konfiguráció
 app.UseCors(builder =>
 {
-    builder.AllowAnyOrigin(); // You can replace this with specific origins
+    builder.AllowAnyOrigin();
     builder.AllowAnyHeader();
     builder.AllowAnyMethod();
 });
 
-// Configure the HTTP request pipeline.
+// HTTP kérés pipeline konfigurálása
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,23 +48,29 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Autentikáció és autorizáció használata
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// new endpoiint to check, if server status is ok.
+// Új végpont a szerver állapotának ellenõrzésére
 app.MapGet("/status", () => Results.Ok(new { status = "ok" }));
-app.Run();
 
+app.Run();
 
 void ConfigureServices()
 {
     builder.Services.AddDbContext<DataContext>();
-}
 
-void AddAuthentication()
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ITokenService, TokenService>();
+}
+void AddAuthentication(IConfiguration configuration)
 {
+    var jwtSettings = configuration.GetSection("JwtSettings");
+    var secretKey = jwtSettings.GetValue<string>("SecretKey");
+
     builder.Services
         .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -76,18 +85,16 @@ void AddAuthentication()
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = "apiWithAuthBackend",
                 ValidAudience = "apiWithAuthBackend",
-
-                // Use the helper method to ensure a 32-byte key
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    PadKey(Encoding.UTF8.GetBytes("!SomethingSecret!"), 32)
+                    PadKey(Encoding.UTF8.GetBytes(secretKey), 32)
                 ),
             };
         });
 }
 
-void AddIdentity()
+void AddIdentity(IServiceCollection services)
 {
-    builder.Services
+    services
         .AddIdentityCore<IdentityUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
@@ -102,9 +109,9 @@ void AddIdentity()
         .AddEntityFrameworkStores<DataContext>();
 }
 
-void ConfigureSwagger()
+void ConfigureSwagger(IServiceCollection services)
 {
-    builder.Services.AddSwaggerGen(option =>
+    services.AddSwaggerGen(option =>
     {
         option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
         option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -133,7 +140,7 @@ void ConfigureSwagger()
     });
 }
 
-void AddRoles()
+void AddRoles(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -143,6 +150,12 @@ void AddRoles()
 
     var tUser = CreateUserRole(roleManager);
     tUser.Wait();
+
+    var tRestaurantAdmin = CreateRestaurantAdminRole(roleManager);
+    tRestaurantAdmin.Wait();
+
+    var tRestaurantUser = CreateRestaurantUserRole(roleManager);
+    tRestaurantUser.Wait();
 }
 
 async Task CreateAdminRole(RoleManager<IdentityRole> roleManager)
@@ -155,43 +168,14 @@ async Task CreateUserRole(RoleManager<IdentityRole> roleManager)
     await roleManager.CreateAsync(new IdentityRole("User"));
 }
 
-void AddAdmin()
+async Task CreateRestaurantAdminRole(RoleManager<IdentityRole> roleManager)
 {
-    var tAdmin = CreateAdminIfNotExists();
-    tAdmin.Wait();
+    await roleManager.CreateAsync(new IdentityRole("RestaurantAdmin"));
 }
 
-async Task CreateAdminIfNotExists()
+async Task CreateRestaurantUserRole(RoleManager<IdentityRole> roleManager)
 {
-    using var scope = app.Services.CreateScope();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var adminDB = await userManager.FindByEmailAsync("admin@admin.com");
-
-    if (adminDB == null)
-    {
-        var admin = new IdentityUser { UserName = "admin", Email = "admin@admin.com" };
-        var adminCreated = await userManager.CreateAsync(admin, "admin123");
-
-        if (adminCreated.Succeeded)
-        {
-            var roleAssignment = await userManager.AddToRoleAsync(admin, "Admin");
-            if (roleAssignment.Succeeded)
-            {
-                // Log success
-                Console.WriteLine("Admin user and role assignment succeeded.");
-            }
-            else
-            {
-                // Log role assignment failure
-                Console.WriteLine("Failed to assign the Admin role to the user.");
-            }
-        }
-        else
-        {
-            // Log user creation failure
-            Console.WriteLine("Failed to create the admin user.");
-        }
-    }
+    await roleManager.CreateAsync(new IdentityRole("RestaurantUser"));
 }
 
 byte[] PadKey(byte[] key, int length)
