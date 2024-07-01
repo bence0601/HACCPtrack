@@ -23,7 +23,7 @@ namespace HACCPTrack.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _authenticationService.RegisterAsync(request.Email, request.Username, request.Password);
+            var result = await _authenticationService.RegisterAsync(request.Email, request.Username, request.Password, request.InviteCode);
 
             if (!result.Success)
             {
