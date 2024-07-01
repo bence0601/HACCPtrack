@@ -10,9 +10,10 @@ namespace HACCPTrack.Services.InviteLinks
         private readonly DataContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public InviteService(DataContext context)
+        public InviteService(DataContext context, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _roleManager = roleManager;
         }
 
         public async Task<string> GenerateInviteAsync(string role)
