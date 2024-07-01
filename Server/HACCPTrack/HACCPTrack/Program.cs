@@ -150,6 +150,12 @@ void AddRoles(WebApplication app)
 
     var tUser = CreateUserRole(roleManager);
     tUser.Wait();
+
+    var tRestaurantAdmin = CreateRestaurantAdminRole(roleManager);
+    tRestaurantAdmin.Wait();
+
+    var tRestaurantUser = CreateRestaurantUserRole(roleManager);
+    tRestaurantUser.Wait();
 }
 
 async Task CreateAdminRole(RoleManager<IdentityRole> roleManager)
@@ -160,6 +166,16 @@ async Task CreateAdminRole(RoleManager<IdentityRole> roleManager)
 async Task CreateUserRole(RoleManager<IdentityRole> roleManager)
 {
     await roleManager.CreateAsync(new IdentityRole("User"));
+}
+
+async Task CreateRestaurantAdminRole(RoleManager<IdentityRole> roleManager)
+{
+    await roleManager.CreateAsync(new IdentityRole("RestaurantAdmin"));
+}
+
+async Task CreateRestaurantUserRole(RoleManager<IdentityRole> roleManager)
+{
+    await roleManager.CreateAsync(new IdentityRole("RestaurantUser"));
 }
 
 byte[] PadKey(byte[] key, int length)
