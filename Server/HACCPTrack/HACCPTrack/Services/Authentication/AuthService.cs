@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HACCPTrack.Services.InviteLinks;
+using Microsoft.AspNetCore.Identity;
 
 namespace HACCPTrack.Services.Authentication
 {
@@ -6,11 +7,38 @@ namespace HACCPTrack.Services.Authentication
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ITokenService _tokenService;
+        private readonly IInviteService _inviteService;
 
-        public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService)
+        public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService, IInviteService inviteService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _inviteService = inviteService;
+        }
+
+        public async Task<AuthResult> RegisterAsync(string email, string username, string password, string inviteCode)
+        {
+            // Ellenőrizzük a meghívókódot
+            var role = await _inviteService.ValidateInviteAsync(inviteCode);
+            if (string.IsNullOrEmpty(role))
+            {
+                return FailedRegistration(email, username, "Invalid or expired invite code.");
+            }
+
+            // Létrehozzuk a felhasználót
+            var result = await _userManager.CreateAsync(
+                new IdentityUser { UserName = username, Email = email }, password);
+
+            if (!result.Succeeded)
+            {
+                return FailedRegistration(result, email, username);
+            }
+
+            // Hozzáadjuk a felhasználót a szerephez
+            var user = await _userManager.FindByEmailAsync(email);
+            await _userManager.AddToRoleAsync(user, role);
+
+            return new AuthResult(true, email, username, "");
         }
         public async Task<AuthResult> LoginAsync(string email, string password)
         {
@@ -45,19 +73,12 @@ namespace HACCPTrack.Services.Authentication
             result.ErrorMessages.Add("Bad credentials", "Invalid password");
             return result;
         }
-        public async Task<AuthResult> RegisterAsync(string email, string username, string password)
+        private static AuthResult FailedRegistration(string email, string username, string errorMessage)
         {
-            var result = await _userManager.CreateAsync(
-                new IdentityUser { UserName = username, Email = email }, password);
-
-            if (!result.Succeeded)
-            {
-                return FailedRegistration(result, email, username);
-            }
-
-            return new AuthResult(true, email, username, "");
+            var authResult = new AuthResult(false, email, username, "");
+            authResult.ErrorMessages.Add("RegistrationError", errorMessage);
+            return authResult;
         }
-
         private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
         {
             var authResult = new AuthResult(false, email, username, "");
