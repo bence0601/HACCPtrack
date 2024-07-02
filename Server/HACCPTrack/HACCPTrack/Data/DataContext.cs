@@ -1,4 +1,5 @@
-﻿using HACCPTrack.Models.Invites;
+﻿using HACCPTrack.Models;
+using HACCPTrack.Models.Invites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace HACCPTrack.Data
         }
 
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
 
     }
 }

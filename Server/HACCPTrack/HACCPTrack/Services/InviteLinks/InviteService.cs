@@ -16,7 +16,7 @@ namespace HACCPTrack.Services.InviteLinks
             _roleManager = roleManager;
         }
 
-        public async Task<string> GenerateInviteAsync(string role)
+        public async Task<string> GenerateInviteAsync(string role, string? restaurantId = null)
         {
             if (!await _roleManager.RoleExistsAsync(role))
             {
@@ -29,6 +29,7 @@ namespace HACCPTrack.Services.InviteLinks
                 Code = inviteCode,
                 Role = role,
                 CreatedAt = DateTime.UtcNow,
+                RestaurantId = restaurantId,
                 IsUsed = false
             };
             _context.Invites.Add(invite);

@@ -16,7 +16,7 @@ namespace HACCPTrack.Controllers
         }
 
         [HttpPost("generate")]
-        public async Task<IActionResult> GenerateInvite([FromBody] GenerateInviteRequest request)
+        public async Task<IActionResult> GenerateInvite([FromBody] GenerateInviteRequest request, string? restaurantId = null)
         {
             if (string.IsNullOrEmpty(request.Role))
             {
@@ -25,7 +25,7 @@ namespace HACCPTrack.Controllers
 
             try
             {
-                var inviteCode = await _inviteService.GenerateInviteAsync(request.Role);
+                var inviteCode = await _inviteService.GenerateInviteAsync(request.Role, restaurantId);
                 return Ok(new { InviteCode = inviteCode });
             }
             catch (ArgumentException ex)
