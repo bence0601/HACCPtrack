@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
-        public int CreatedById { get; set; }
+        public string CreatedById { get; set; }
         public User CreatedBy { get; set; }
         public ICollection<User> Users { get; set; }
         public ICollection<Log> Logs { get; set; }

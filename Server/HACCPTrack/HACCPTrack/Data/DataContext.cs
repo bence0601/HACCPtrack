@@ -10,6 +10,12 @@ namespace HACCPTrack.Data
     {
         private readonly IConfiguration _configuration;
 
+        public DbSet<Invite> Invites { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<CheckItem> CheckItems { get; set; }
+
         public DataContext(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -27,13 +33,39 @@ namespace HACCPTrack.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-        }
 
-        public DbSet<Invite> Invites { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Restaurant> Restaurants { get; set; }
-        public DbSet<Log> Logs { get; set; }
-        public DbSet<CheckItem> CheckItems { get; set; }
+            // User - Restaurant relationship
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Restaurant)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RestaurantId);
+
+            // Restaurant - CreatedBy relationship
+            modelBuilder.Entity<Restaurant>()
+                .HasOne(r => r.CreatedBy)
+                .WithMany()
+                .HasForeignKey(r => r.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.SetNull, depending on your requirements
+
+            // Restaurant - Log relationship
+            modelBuilder.Entity<Log>()
+                .HasOne(l => l.Restaurant)
+                .WithMany(r => r.Logs)
+                .HasForeignKey(l => l.RestaurantId);
+
+            // Log - CheckItem relationship
+            modelBuilder.Entity<CheckItem>()
+                .HasOne(ci => ci.Log)
+                .WithMany(l => l.CheckItems)
+                .HasForeignKey(ci => ci.LogId);
+
+            // User - Log relationship
+            modelBuilder.Entity<Log>()
+                .HasOne(l => l.CreatedByUser)
+                .WithMany(u => u.Logs)
+                .HasForeignKey(l => l.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.SetNull, depending on your requirements
+        }
 
 
 
