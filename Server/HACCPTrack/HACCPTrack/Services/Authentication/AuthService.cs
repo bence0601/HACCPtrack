@@ -26,6 +26,12 @@ namespace HACCPTrack.Services.Authentication
         {
             // Ellenőrizzük a meghívókódot
             var role = await _inviteService.ValidateInviteAsync(inviteCode);
+            var identityRole = await _roleManager.FindByNameAsync(role);
+            if (identityRole == null)
+            {
+                return FailedRegistration(email, username, "Role not found.");
+            }
+
             if (string.IsNullOrEmpty(role))
             {
                 return FailedRegistration(email, username, "Invalid or expired invite code.");
@@ -48,17 +54,6 @@ namespace HACCPTrack.Services.Authentication
                 Role = role
             };
 
-            // Szerep lekérdezése az IdentityRoleManager segítségével
-            var identityRole = await _roleManager.FindByNameAsync(role);
-            if (identityRole != null)
-            {
-                user.IdentityRole = identityRole;
-            }
-            else
-            {
-                // Kezelés, ha a szerep nem található
-                return FailedRegistration(email, username, "Role not found.");
-            }
 
             _dataContext.Users.Add(user);
             await _dataContext.SaveChangesAsync();
