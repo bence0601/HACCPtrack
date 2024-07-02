@@ -29,6 +29,7 @@ namespace HACCPTrack.Services.InviteLinks
                 Code = inviteCode,
                 Role = role,
                 CreatedAt = DateTime.UtcNow,
+                RestaurantId = 0,
                 IsUsed = false
             };
             _context.Invites.Add(invite);
