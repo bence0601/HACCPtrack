@@ -12,6 +12,8 @@ namespace HACCPTrack.Models
         public IdentityUser IdentityUser { get; set; }
 
         public string Role { get; set; }
+        [JsonIgnore]
+        public IdentityRole IdentityRole { get; set; }
 
         public User()
         {

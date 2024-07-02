@@ -2,7 +2,7 @@
 {
     public interface IInviteService
     {
-        Task<string> GenerateInviteAsync(string role);
+        Task<string> GenerateInviteAsync(string role, string? restaurantId = null);
         Task<string> ValidateInviteAsync(string inviteCode);
     }
 }
