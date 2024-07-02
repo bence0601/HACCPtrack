@@ -32,6 +32,10 @@ namespace HACCPTrack.Data
         public DbSet<Invite> Invites { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<CheckItem> CheckItems { get; set; }
+
+
 
     }
 }
