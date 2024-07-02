@@ -15,9 +15,13 @@ namespace HACCPTrack.Models
         [JsonIgnore]
         public IdentityRole IdentityRole { get; set; }
 
+        public string RestaurantId { get; set; }
+        public Restaurant Restaurant { get; set; }
+        public ICollection<Log> Logs { get; set; }
         public User()
         {
             Id = Guid.NewGuid().ToString();
+            Logs = new List<Log>();
         }
     }
 }
