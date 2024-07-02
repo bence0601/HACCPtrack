@@ -8,16 +8,18 @@ namespace HACCPTrack.Services.Authentication
     public class AuthService : IAuthService
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly IInviteService _inviteService;
         private readonly DataContext _dataContext;
 
-        public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService, IInviteService inviteService, DataContext dataContext)
+        public AuthService(UserManager<IdentityUser> userManager, ITokenService tokenService, IInviteService inviteService, DataContext dataContext, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _inviteService = inviteService;
             _dataContext = dataContext;
+            _roleManager = roleManager;
         }
 
         public async Task<AuthResult> RegisterAsync(string email, string username, string password, string inviteCode)
@@ -32,8 +34,7 @@ namespace HACCPTrack.Services.Authentication
             // Létrehozzuk a felhasználót
             var identityUser = new IdentityUser { UserName = username, Email = email };
 
-            var result = await _userManager.CreateAsync(
-               identityUser, password);
+            var result = await _userManager.CreateAsync(identityUser, password);
 
             if (!result.Succeeded)
             {
@@ -41,14 +42,30 @@ namespace HACCPTrack.Services.Authentication
             }
 
             // Hozzáadjuk a felhasználót a szerephez
-            var user = await _userManager.FindByEmailAsync(email);
-            await _userManager.AddToRoleAsync(user, role);
+            var user = new User
+            {
+                IdentityUserId = identityUser.Id,
+                Role = role
+            };
 
-            _dataContext.Users.Add(new User { IdentityUserId = identityUser.Id, Role = role });
+            // Szerep lekérdezése az IdentityRoleManager segítségével
+            var identityRole = await _roleManager.FindByNameAsync(role);
+            if (identityRole != null)
+            {
+                user.IdentityRole = identityRole;
+            }
+            else
+            {
+                // Kezelés, ha a szerep nem található
+                return FailedRegistration(email, username, "Role not found.");
+            }
+
+            _dataContext.Users.Add(user);
             await _dataContext.SaveChangesAsync();
 
             return new AuthResult(true, identityUser.Id, email, username, "");
         }
+
         public async Task<AuthResult> LoginAsync(string email, string password)
         {
             var managedUser = await _userManager.FindByEmailAsync(email);
