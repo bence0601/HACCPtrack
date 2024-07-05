@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import API_BASE_URL from "../../config";
 
 // Az AuthContext létrehozása
 const AuthContext = createContext();
@@ -9,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     // Adatok betöltése az AsyncStorage-ból, amikor az alkalmazás elindul
@@ -21,16 +23,53 @@ export const AuthProvider = ({ children }) => {
         setUser(JSON.parse(storedUser));
         setToken(storedToken);
         setRole(storedRole);
+        setIsSignedIn(true);
       }
     };
 
     loadStoredData();
   }, []);
 
+  const register = async (email, username, password, inviteCode) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/Auth/Register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, password, inviteCode }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { user, token, role } = data;
+
+        // Mentés az állapotba és az AsyncStorage-ba
+        setUser(user);
+        setToken(token);
+        setRole(role);
+        setIsSignedIn(true);
+
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("role", role);
+
+        return true;
+      } else {
+        console.error("Registration failed:", response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      return false;
+    }
+  };
+
   const login = async (userData, authToken, userRole) => {
     setUser(userData);
     setToken(authToken);
     setRole(userRole);
+    setIsSignedIn(true);
 
     // Adatok mentése az AsyncStorage-ba
     await AsyncStorage.setItem("user", JSON.stringify(userData));
@@ -42,6 +81,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     setRole(null);
+    setIsSignedIn(false);
 
     // Adatok törlése az AsyncStorage-ból
     await AsyncStorage.removeItem("user");
@@ -50,7 +90,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, role, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, role, isSignedIn, register, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
