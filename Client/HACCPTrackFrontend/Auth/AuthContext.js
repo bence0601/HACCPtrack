@@ -65,16 +65,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (userData, authToken, userRole) => {
-    setUser(userData);
-    setToken(authToken);
-    setRole(userRole);
-    setIsSignedIn(true);
+  const login = async (email, password) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/Auth/Login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Adatok mentése az AsyncStorage-ba
-    await AsyncStorage.setItem("user", JSON.stringify(userData));
-    await AsyncStorage.setItem("token", authToken);
-    await AsyncStorage.setItem("role", userRole);
+      if (response.ok) {
+        const data = await response.json();
+        const { user, token, role } = data;
+
+        // Mentés az állapotba és az AsyncStorage-ba
+        setUser(user);
+        setToken(token);
+        setRole(role);
+        setIsSignedIn(true);
+
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        await AsyncStorage.setItem("token", token);
+        await AsyncStorage.setItem("role", role);
+
+        return true;
+      } else {
+        console.error("Login failed:", response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      return false;
+    }
   };
 
   const logout = async () => {
