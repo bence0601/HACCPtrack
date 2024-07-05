@@ -5,19 +5,31 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useState } from "react";
 import RegisterScreen from "./screens/Auth/RegisterScreen";
+import HomeScreen from "./screens/Home/HomeScreen";
+import LoginScreen from "./screens/Auth/LoginScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="CheckServerStatus"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="CheckServerStatus" component={CheckServerStatus} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        {isSignedIn ? (
+          <Stack.Screen name="Home" component={HomeScreen} />
+        ) : (
+          <>
+            <Stack.Screen
+              name="CheckServerStatus"
+              component={CheckServerStatus}
+            />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

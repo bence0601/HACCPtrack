@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 
-export default function RegisterScreen() {
+export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [username, setUsername] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
@@ -52,7 +52,7 @@ export default function RegisterScreen() {
       </Button>
       <Button
         title="Go to Login"
-        // onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate("Login")}
       />
     </View>
   );
