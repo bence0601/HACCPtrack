@@ -5,7 +5,7 @@ import API_BASE_URL from "../../config";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CheckServerStatus() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
