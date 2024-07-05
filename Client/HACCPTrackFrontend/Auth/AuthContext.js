@@ -2,10 +2,8 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API_BASE_URL from "../config";
 
-// Az AuthContext létrehozása
 const AuthContext = createContext();
 
-// Az AuthProvider komponens
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);

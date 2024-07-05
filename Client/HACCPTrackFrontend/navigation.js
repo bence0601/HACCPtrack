@@ -4,9 +4,9 @@ import CheckServerStatus from "./components/CheckServerStatus/CheckServerStatus"
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useState } from "react";
-import RegisterScreen from "./screens/Auth/RegisterScreen";
+import RegisterScreen from "./screens/AuthScreen/RegisterScreen";
 import HomeScreen from "./screens/Home/HomeScreen";
-import LoginScreen from "./screens/Auth/LoginScreen";
+import LoginScreen from "./screens/AuthScreen/LoginScreen";
 import { useAuth } from "./Auth/AuthContext";
 
 const Stack = createNativeStackNavigator();
