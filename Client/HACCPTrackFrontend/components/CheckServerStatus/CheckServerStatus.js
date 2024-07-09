@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Button } from "react-native-paper";
 import API_BASE_URL from "../../config";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CheckServerStatus() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -29,9 +31,14 @@ export default function CheckServerStatus() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       {loading ? (
-        <ActivityIndicator size="large" color="#5b5b5b" />
+        <>
+          <Button title="Go to Register" />
+          <ActivityIndicator size="large" color="#5b5b5b" />
+        </>
       ) : (
-        <Text>Server is up and running</Text>
+        <Text onPress={() => navigation.navigate("Register")}>
+          Server is up and running
+        </Text>
       )}
     </View>
   );
