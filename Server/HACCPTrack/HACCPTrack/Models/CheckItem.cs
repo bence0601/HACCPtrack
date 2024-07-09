@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace HACCPTrack.Models
 {
@@ -18,6 +19,20 @@ namespace HACCPTrack.Models
         public CheckItem()
         {
             Id = Guid.NewGuid().ToString();
+        }
+    }
+
+    public class CheckItemWithCheck : CheckItem
+    {
+        public CheckItemWithCheck()
+        {
+        }
+    }
+
+    public class CheckItemWithInput : CheckItem
+    {
+        public CheckItemWithInput()
+        {
         }
     }
 }
