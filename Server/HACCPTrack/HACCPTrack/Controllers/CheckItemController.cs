@@ -1,12 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HACCPTrack.Models;
+using HACCPTrack.Services.CheckItemServices;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HACCPTrack.Controllers
 {
     public class CheckItemController : Controller
     {
-        public IActionResult Index()
+            private readonly ICheckItemService _checkItemService;
+        
+        public CheckItemController(ICheckItemService checkItemService)
         {
-            return View();
+            _checkItemService = checkItemService;
+        }
+
+        [HttpGet("GetAllCheckItems")]
+        public async Task<ActionResult<List<CheckItem>>> GetCheckItems()
+        {
+            try
+            {
+                var result = await _checkItemService.GetAllItems();
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

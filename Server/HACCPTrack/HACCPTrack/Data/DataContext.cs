@@ -65,6 +65,8 @@ namespace HACCPTrack.Data
                 .WithMany(u => u.Logs)
                 .HasForeignKey(l => l.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.SetNull, depending on your requirements
+
+
         }
 
 
