@@ -30,12 +30,6 @@ namespace HACCPTrack.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InputValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsChecked")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LogId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");

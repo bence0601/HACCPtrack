@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Text.Json.Serialization;
-
 namespace HACCPTrack.Models
 {
     public class CheckItem
     {
         public string Id { get; set; }
         public string LogId { get; set; }
-        [JsonIgnore]
         public Log Log { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
-        public bool? IsChecked { get; set; }
-        public string? InputValue { get; set; }
         public string? PhotoPath { get; set; }
         public string? Note { get; set; }
 
@@ -22,17 +17,13 @@ namespace HACCPTrack.Models
         }
     }
 
-    public class CheckItemWithCheck : CheckItem
+    public class CheckItemWithCheckbox : CheckItem
     {
-        public CheckItemWithCheck()
-        {
-        }
+        public bool IsChecked { get; set; }
     }
 
-    public class CheckItemWithInput : CheckItem
+    public class CheckItemWithInputField : CheckItem
     {
-        public CheckItemWithInput()
-        {
-        }
+        public string InputField { get; set; }
     }
 }

@@ -164,8 +164,6 @@ namespace HACCPTrack.Migrations
                     LogId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsChecked = table.Column<bool>(type: "bit", nullable: true),
-                    InputValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

@@ -13,23 +13,39 @@ namespace HACCPTrack.Services
     {
         private readonly DataContext _context;
 
-        public CheckItemService(DataContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<List<CheckItem>> GetAllItems()
+        public async Task<List<CheckItem>> AddCheckItemWithCheckboxAsync(CheckItemWithCheckbox checkItem)
         {
             try
             {
+                _context.CheckItems.Add(checkItem);
+                await _context.SaveChangesAsync();
                 return await _context.CheckItems.ToListAsync();
-
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while retrieving all CheckItems.", ex);
+                throw new Exception("An error occurred while creating a note.", ex);
 
             }
+
+        }
+
+        public async Task<List<CheckItem>> AddCheckItemWithInputFieldAsync(CheckItemWithInputField checkItem)
+        {
+            try
+            {
+                _context.CheckItems.Add(checkItem);
+                await _context.SaveChangesAsync();
+                return await _context.CheckItems.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while creating a note.", ex);
+            }
+        }
+
+        public Task<List<CheckItem>> GetAllItemsAsync()
+        {
+            return _context.CheckItems.ToListAsync();
         }
     }
 }

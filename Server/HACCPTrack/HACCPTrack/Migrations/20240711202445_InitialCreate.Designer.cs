@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HACCPTrack.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240709160354_InitialCreate")]
+    [Migration("20240711202445_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,12 +32,6 @@ namespace HACCPTrack.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InputValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsChecked")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LogId")
                         .IsRequired()
