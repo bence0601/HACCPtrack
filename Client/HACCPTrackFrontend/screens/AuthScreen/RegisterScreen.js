@@ -20,6 +20,7 @@ export default function RegisterScreen({ navigation }) {
       password.value,
       inviteCode
     );
+    navigation.navigate("Login");
     if (!response) {
       console.log("err");
     }

@@ -24,8 +24,6 @@ export default function CheckServerStatus() {
           console.error("Server returned an error:", response.status);
         }
       } catch (error) {
-        console.log("API_BASE_URL:", API_BASE_URL);
-
         console.error("Error checking server status:", error);
       }
     };
@@ -40,9 +38,12 @@ export default function CheckServerStatus() {
           <ActivityIndicator size="large" color="#5b5b5b" />
         </>
       ) : (
-        <Text onPress={() => navigation.navigate("Register")}>
-          Server is up and running
-        </Text>
+        <>
+          <Text onPress={() => navigation.navigate("Register")}>
+            Go to Register
+          </Text>
+          <Text onPress={() => navigation.navigate("Login")}>Go to Login</Text>
+        </>
       )}
     </View>
   );

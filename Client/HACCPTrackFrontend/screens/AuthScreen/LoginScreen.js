@@ -39,20 +39,17 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.error}>{password.error}</Text>
       ) : null}
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={handleLogin}>
-          {loading ? "Loading..." : "Login"}
-        </Button>
+        <Button
+          mode="contained"
+          onPress={handleLogin}
+          title={loading ? "Loading..." : "Login"}
+        ></Button>
         <Button
           style={styles.button}
           title="Go to Register"
           onPress={() => navigation.navigate("Register")}
         />
       </View>
-      <Button
-        style={styles.continue}
-        title="Continue without an account."
-        onPress={() => navigation.navigate("Home")}
-      />
     </View>
   );
 }
