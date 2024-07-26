@@ -5,6 +5,7 @@
         string IdentityUserId,
         string Email,
         string UserName,
+        string Role,
         string Token)
     {
         //Error code - error message

@@ -1,15 +1,28 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
+import { useAuth } from "../../Auth/AuthContext";
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [username, setUsername] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+  const [inviteCode, setInviteCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const { register } = useAuth();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     console.log("Registering...");
+    setLoading(true);
+    const response = await register(
+      email.value,
+      username.value,
+      password.value,
+      inviteCode
+    );
+    if (!response) {
+      console.log("err");
+    }
   };
 
   return (
@@ -47,6 +60,15 @@ export default function RegisterScreen({ navigation }) {
       {password.error ? (
         <Text style={styles.error}>{password.error}</Text>
       ) : null}
+
+      <TextInput
+        style={styles.input}
+        placeholder="Invite Code"
+        value={inviteCode}
+        onChangeText={(text) => setInviteCode(text)}
+        autoCapitalize="none"
+      />
+
       <Button onPress={handleRegister} mode="contained" disabled={loading}>
         {loading ? "Loading..." : "Register"}
       </Button>
