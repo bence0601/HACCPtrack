@@ -61,24 +61,24 @@ app.MapGet("/status", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
 
-void ConfigureServices()
-{
-    builder.Services.AddDbContext<DataContext>();
+    void ConfigureServices()
+    {
+        builder.Services.AddDbContext<DataContext>();
 
-    // Szolgáltatások regisztrálása
-    builder.Services.AddScoped<IInviteService, InviteService>();
-    builder.Services.AddScoped<InviteService>();
-    builder.Services.AddScoped<IAuthService, AuthService>();
-    builder.Services.AddScoped<ITokenService, TokenService>();
-    builder.Services.AddScoped<ICheckItemService,CheckItemService>();
-    builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-        .AddEntityFrameworkStores<DataContext>()
-        .AddDefaultTokenProviders();
+        // Szolgáltatások regisztrálása
+        builder.Services.AddScoped<IInviteService, InviteService>();
+        builder.Services.AddScoped<InviteService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<ICheckItemService, CheckItemService>();
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<DataContext>()
+            .AddDefaultTokenProviders();
 
-    // Controllers regisztrálása
-    builder.Services.AddControllers();
+        // Controllers regisztrálása
+        builder.Services.AddControllers();
 
-}
+    }
 void AddAuthentication(IConfiguration configuration)
 {
     var jwtSettings = configuration.GetSection("JwtSettings");

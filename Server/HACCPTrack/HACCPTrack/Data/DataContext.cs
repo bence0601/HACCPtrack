@@ -3,6 +3,7 @@ using HACCPTrack.Models.Invites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace HACCPTrack.Data
 {
@@ -66,10 +67,11 @@ namespace HACCPTrack.Data
                 .HasForeignKey(l => l.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict); // or DeleteBehavior.SetNull, depending on your requirements
 
-
+            // CheckItem Discriminator configuration
+            modelBuilder.Entity<CheckItem>()
+                .HasDiscriminator<string>("Type")
+                .HasValue<CheckItemWithCheckBox>("CheckItemWithCheckBox")
+                .HasValue<CheckItemWithInputField>("CheckItemWithInputField");
         }
-
-
-
     }
 }

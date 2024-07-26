@@ -1,13 +1,11 @@
-﻿using HACCPTrack.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using HACCPTrack.DTOs;
+using HACCPTrack.Models;
 
 namespace HACCPTrack.Services.CheckItemServices
 {
     public interface ICheckItemService
     {
-        Task<List<CheckItem>> GetAllItemsAsync();
-        Task<List<CheckItem>> AddCheckItemWithCheckboxAsync(CheckItemWithCheckbox checkItem);
-        Task<List<CheckItem>> AddCheckItemWithInputFieldAsync(CheckItemWithInputField checkItem);
+        public  Task<List<CheckItem>> GetAllCheckItemsAsync();
+        public Task<CheckItem> CreateCheckItemAsync(CheckItemDTO checkItem);
     }
 }

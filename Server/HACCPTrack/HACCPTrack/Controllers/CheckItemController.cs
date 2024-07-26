@@ -1,59 +1,36 @@
-﻿using HACCPTrack.Models;
+﻿using HACCPTrack.DTOs;
+using HACCPTrack.Models;
+using HACCPTrack.Services;
 using HACCPTrack.Services.CheckItemServices;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HACCPTrack.Controllers
 {
-    public class CheckItemController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CheckItemController : ControllerBase
     {
-            private readonly ICheckItemService _checkItemService;
-        
+        private readonly ICheckItemService _checkItemService;
+
         public CheckItemController(ICheckItemService checkItemService)
         {
             _checkItemService = checkItemService;
         }
 
-        [HttpGet("GetAllCheckItems")]
-        public async Task<ActionResult<List<CheckItem>>> GetCheckItems()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CheckItem>>> GetCheckItems()
         {
-            try
-            {
-                var result = await _checkItemService.GetAllItemsAsync();
-                return Ok(result);
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var checkItems = await _checkItemService.GetAllCheckItemsAsync();
+            return Ok(checkItems);
         }
-        [HttpPost("AddCheckItemWithCheckBox")]
-        public async Task<ActionResult<List<CheckItem>>> AddCheckItemWithCheckBox(CheckItemWithCheckbox checkItem)
-        {
-            try
-            {
-                var result = await _checkItemService.AddCheckItemWithCheckboxAsync(checkItem);
-                return Ok(result);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while adding the note: {ex.Message}");
 
-            }
-        }
-        [HttpPost("AddCheckItemWithInputField")]
-        public async Task<ActionResult<List<CheckItem>>> AddCheckItemWithInputField(CheckItemWithInputField checkItem)
+        [HttpPost]
+        public async Task<ActionResult<CheckItem>> CreateCheckItem(CheckItemDTO checkItem)
         {
-            try
-            {
-                var result = await _checkItemService.AddCheckItemWithInputFieldAsync(checkItem);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while adding the note: {ex.Message}");
-
-            }
+            var createdCheckItem = await _checkItemService.CreateCheckItemAsync(checkItem);
+            return CreatedAtAction(nameof(GetCheckItems), new { id = createdCheckItem.Id }, createdCheckItem);
         }
     }
 }

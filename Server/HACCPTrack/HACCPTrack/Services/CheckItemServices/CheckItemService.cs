@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using HACCPTrack.Data;
 using HACCPTrack.Models;
 using HACCPTrack.Services.CheckItemServices;
+using HACCPTrack.DTOs;
 
 namespace HACCPTrack.Services
 {
@@ -13,39 +14,31 @@ namespace HACCPTrack.Services
     {
         private readonly DataContext _context;
 
-        public async Task<List<CheckItem>> AddCheckItemWithCheckboxAsync(CheckItemWithCheckbox checkItem)
+        public CheckItemService (DataContext context)
         {
-            try
+            _context = context;
+        }
+        public async Task<List<CheckItem>> GetAllCheckItemsAsync()
+        {
+            return await _context.CheckItems.ToListAsync();
+        }
+        public async Task<CheckItem> CreateCheckItemAsync(CheckItemDTO checkItem)
+        {
+            var NewCheckItem = new CheckItem
             {
-                _context.CheckItems.Add(checkItem);
-                await _context.SaveChangesAsync();
-                return await _context.CheckItems.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while creating a note.", ex);
-
-            }
-
+                Id = checkItem.Id,
+                LogId = checkItem.LogId,
+                Name = checkItem.Name,
+                Description = checkItem.Description,
+                PhotoPath = checkItem.PhotoPath,
+                Note = checkItem.Note,
+                Type = checkItem.Type,
+            };
+            _context.CheckItems.Add(NewCheckItem);
+            await _context.SaveChangesAsync();
+            return NewCheckItem;
         }
 
-        public async Task<List<CheckItem>> AddCheckItemWithInputFieldAsync(CheckItemWithInputField checkItem)
-        {
-            try
-            {
-                _context.CheckItems.Add(checkItem);
-                await _context.SaveChangesAsync();
-                return await _context.CheckItems.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while creating a note.", ex);
-            }
-        }
-
-        public Task<List<CheckItem>> GetAllItemsAsync()
-        {
-            return _context.CheckItems.ToListAsync();
-        }
+  
     }
 }
