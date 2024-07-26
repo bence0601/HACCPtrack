@@ -1,5 +1,5 @@
 ﻿namespace HACCPTrack.Services.Authentication
 {
-    public record AuthResponse(string Email, string UserName, string Token);
+    public record AuthResponse(string Email, string UserName, string role, string Token);
 
 }

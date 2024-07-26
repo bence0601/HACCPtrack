@@ -2,6 +2,7 @@
 using HACCPTrack.Models;
 using HACCPTrack.Services.InviteLinks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HACCPTrack.Services.Authentication
 {
@@ -59,13 +60,12 @@ namespace HACCPTrack.Services.Authentication
             _dataContext.Users.Add(user);
             await _dataContext.SaveChangesAsync();
 
-            return new AuthResult(true, identityUser.Id, email, username, "");
+            return new AuthResult(true, identityUser.Id, email, username, role, "");
         }
 
         public async Task<AuthResult> LoginAsync(string email, string password)
         {
             var managedUser = await _userManager.FindByEmailAsync(email);
-
             if (managedUser == null)
             {
                 return InvalidEmail(email);
@@ -76,34 +76,40 @@ namespace HACCPTrack.Services.Authentication
             {
                 return InvalidPassword(email, managedUser.UserName);
             }
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.IdentityUserId == managedUser.Id);
+            if (user == null)
+            {
+                // Ha a felhasználót nem találjuk az adatbázisban, kezeljük az esetet
+                return new AuthResult(false, managedUser.Id, email, managedUser.UserName, "Role not found", "");
+            }
 
             var accessToken = _tokenService.CreateToken(managedUser);
 
-            return new AuthResult(true, managedUser.Id, managedUser.Email, managedUser.UserName, accessToken);
+            return new AuthResult(true, managedUser.Id, managedUser.Email, managedUser.UserName, user.Role, accessToken);
         }
 
         private static AuthResult InvalidEmail(string email)
         {
-            var result = new AuthResult(false, null, email, "", "");
+            var result = new AuthResult(false, null, email, "", "", "");
             result.ErrorMessages.Add("Bad credentials", "Invalid email");
             return result;
         }
 
         private static AuthResult InvalidPassword(string email, string userName)
         {
-            var result = new AuthResult(false, null, email, userName, "");
+            var result = new AuthResult(false, null, email, userName, "", "");
             result.ErrorMessages.Add("Bad credentials", "Invalid password");
             return result;
         }
         private static AuthResult FailedRegistration(string email, string username, string errorMessage)
         {
-            var authResult = new AuthResult(false, null, email, username, "");
+            var authResult = new AuthResult(false, null, email, username, "", "");
             authResult.ErrorMessages.Add("RegistrationError", errorMessage);
             return authResult;
         }
         private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
         {
-            var authResult = new AuthResult(false, null, email, username, "");
+            var authResult = new AuthResult(false, null, email, username, "", "");
 
             foreach (var error in result.Errors)
             {

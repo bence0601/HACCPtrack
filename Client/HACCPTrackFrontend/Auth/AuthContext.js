@@ -5,7 +5,8 @@ import API_BASE_URL from "../config";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -13,12 +14,14 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Adatok betöltése az AsyncStorage-ból, amikor az alkalmazás elindul
     const loadStoredData = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
+      const storedEmail = await AsyncStorage.getItem("email");
+      const storedUserName = await AsyncStorage.getItem("userName");
       const storedToken = await AsyncStorage.getItem("token");
       const storedRole = await AsyncStorage.getItem("role");
 
       if (storedUser && storedToken && storedRole) {
-        setUser(JSON.parse(storedUser));
+        setEmail(storedEmail);
+        setUserName(storedUserName);
         setToken(storedToken);
         setRole(storedRole);
         setIsSignedIn(true);
@@ -45,17 +48,15 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const { user, token, role } = data;
+        console.log("Registering success!");
+        const { email, userName } = data;
 
         // Mentés az állapotba és az AsyncStorage-ba
-        setUser(user);
-        setToken(token);
-        setRole(role);
-        setIsSignedIn(true);
+        setEmail(email);
+        setUserName(userName);
 
-        await AsyncStorage.setItem("user", JSON.stringify(user));
-        await AsyncStorage.setItem("token", token);
-        await AsyncStorage.setItem("role", role);
+        await AsyncStorage.setItem("email", email);
+        await AsyncStorage.setItem("userName", userName);
 
         return true;
       } else {
@@ -80,15 +81,17 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        const { user, token, role } = data;
+        const { email, userName, token, role } = data;
 
         // Mentés az állapotba és az AsyncStorage-ba
-        setUser(user);
+        setEmail(email);
+        setUserName(userName);
         setToken(token);
         setRole(role);
         setIsSignedIn(true);
 
-        await AsyncStorage.setItem("user", JSON.stringify(user));
+        await AsyncStorage.setItem("email", email);
+        await AsyncStorage.setItem("userName", userName);
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("role", role);
 
