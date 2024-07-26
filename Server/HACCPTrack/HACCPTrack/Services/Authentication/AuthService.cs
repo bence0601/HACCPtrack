@@ -51,7 +51,8 @@ namespace HACCPTrack.Services.Authentication
             var user = new User
             {
                 IdentityUserId = identityUser.Id,
-                Role = role
+                Role = role,
+                RestaurantId = null,
             };
 
 

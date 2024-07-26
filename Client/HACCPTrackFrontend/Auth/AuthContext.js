@@ -35,7 +35,12 @@ export const AuthProvider = ({ children }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, username, password, inviteCode }),
+        body: JSON.stringify({
+          email: email,
+          username: username,
+          password: password,
+          inviteCode: inviteCode,
+        }),
       });
 
       if (response.ok) {
@@ -54,7 +59,7 @@ export const AuthProvider = ({ children }) => {
 
         return true;
       } else {
-        console.error("Registration failed:", response.status);
+        console.error("Registration failed:", response.status, error.data);
         return false;
       }
     } catch (error) {

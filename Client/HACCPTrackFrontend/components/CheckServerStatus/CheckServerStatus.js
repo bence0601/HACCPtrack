@@ -17,11 +17,15 @@ export default function CheckServerStatus() {
           if (data.status === "ok") {
             console.log("Server is now listening. (first fetch is working)");
             setLoading(false);
+          } else {
+            console.error("Unexpected response data:", data);
           }
         } else {
           console.error("Server returned an error:", response.status);
         }
       } catch (error) {
+        console.log("API_BASE_URL:", API_BASE_URL);
+
         console.error("Error checking server status:", error);
       }
     };
