@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       const storedToken = await AsyncStorage.getItem("token");
       const storedRole = await AsyncStorage.getItem("role");
 
-      if (storedUser && storedToken && storedRole) {
+      if (storedEmail && storedUserName && storedToken && storedRole) {
         setEmail(storedEmail);
         setUserName(storedUserName);
         setToken(storedToken);
@@ -107,20 +107,31 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    setUser(null);
+    setEmail(null);
+    setUserName(null);
     setToken(null);
     setRole(null);
     setIsSignedIn(false);
 
     // Adatok törlése az AsyncStorage-ból
-    await AsyncStorage.removeItem("user");
+    await AsyncStorage.removeItem("email");
+    await AsyncStorage.removeItem("userName");
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("role");
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, token, role, isSignedIn, register, login, logout }}
+      value={{
+        email,
+        userName,
+        token,
+        role,
+        isSignedIn,
+        register,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
