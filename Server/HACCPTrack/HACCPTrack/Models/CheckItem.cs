@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace HACCPTrack.Models
 {
@@ -6,6 +7,7 @@ namespace HACCPTrack.Models
     {
         public string Id { get; set; }
         public string LogId { get; set; }
+        [JsonIgnore]
         public Log Log { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
