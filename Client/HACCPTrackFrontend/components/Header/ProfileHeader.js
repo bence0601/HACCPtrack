@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 
-const ProfileHeader = ({ userName }) => {
+const ProfileHeader = ({ userName, title }) => {
   const currentDate = new Date().toLocaleDateString("hu-HU", {
     day: "2-digit",
     month: "long",
@@ -16,10 +16,16 @@ const ProfileHeader = ({ userName }) => {
           uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         }}
       />
-      <View>
-        <Text style={styles.greeting}>Hi, {userName}</Text>
-        <Text style={styles.date}>{currentDate}</Text>
-      </View>
+      {userName ? (
+        <View>
+          <Text style={styles.greeting}>Hi, {userName}</Text>
+          <Text style={styles.date}>{currentDate}</Text>
+        </View>
+      ) : (
+        <View>
+          <Text style={styles.greeting}>{title}</Text>
+        </View>
+      )}
       <View style={styles.notificationIcon}>{/* Notification Icon */}</View>
     </View>
   );

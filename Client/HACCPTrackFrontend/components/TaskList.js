@@ -1,18 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import TaskCard from "./TaskCard";
+import CategoryCard from "./CategoryCard";
 
 const TaskList = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Today's task</Text>
       <View style={styles.taskContainer}>
-        <TaskCard
-          title="User experience design"
+        <CategoryCard
+          title="Restaurant design"
           progress={40}
           color="#00A1F1"
+          targetScreen={"RestaurantScreen"}
         />
-        <TaskCard title="Meeting with designer" progress={60} color="#7B2CBF" />
+        <CategoryCard title="Naplók" progress={60} color="#7B2CBF" />
       </View>
       <Text style={styles.heading}>Upcoming task</Text>
       <View style={styles.upcomingTask}>

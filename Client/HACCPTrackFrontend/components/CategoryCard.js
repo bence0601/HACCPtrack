@@ -1,22 +1,28 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const TaskCard = ({ title, progress, color }) => {
+const CategoryCard = ({ title, progress, color, targetScreen }) => {
+  const navigation = useNavigation();
+
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
+    <TouchableOpacity
+      style={[styles.container, { backgroundColor: color }]}
+      onPress={() => navigation.navigate(targetScreen)}
+    >
       <Text style={styles.title}>{title}</Text>
       <View style={styles.progressContainer}>
         <Text style={styles.progressText}>Progress</Text>
         <Text style={styles.progressPercentage}>{progress}%</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
-    padding: 16,
+    padding: 24,
     marginVertical: 8,
     flex: 1,
   },
@@ -36,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskCard;
+export default CategoryCard;
