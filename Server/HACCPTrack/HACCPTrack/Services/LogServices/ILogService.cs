@@ -6,6 +6,6 @@ namespace HACCPTrack.Services.LogServices
     public interface ILogService
     {
         public Task<List<Log>> GetAllLogs();
-        public Task<Log> CreateLogsAsync(Log log);
+        public Task<Log> CreateLogsAsync(LogDTO log);
     }
 }

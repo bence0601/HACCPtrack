@@ -25,7 +25,7 @@ namespace HACCPTrack.Controllers
             }
 
             [HttpPost]
-            public async Task<ActionResult<CheckItem>> CreateLog(Log log)
+            public async Task<ActionResult<CheckItem>> CreateLog(LogDTO log)
             {
                 var createdLog = await _logservice.CreateLogsAsync(log);
                 return CreatedAtAction(nameof(GetLogs), new { id = createdLog.Id }, createdLog);
