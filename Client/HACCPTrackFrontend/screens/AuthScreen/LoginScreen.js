@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../Auth/AuthContext";
 
 export default function LoginScreen({ navigation }) {
-  const { login } = useAuth();
+  const { login, role } = useAuth();
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [loading, setLoading] = useState(false);
@@ -19,9 +19,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    const userRole = response.role;
-    console.log(userRole);
-    if (userRole === "admin") {
+    if (role === "admin") {
       navigation.navigate("AdminHome");
     } else {
       navigation.navigate("Home");
