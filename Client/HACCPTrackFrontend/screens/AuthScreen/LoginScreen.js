@@ -2,9 +2,12 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 import React, { useState } from "react";
 import { useAuth } from "../../Auth/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
-export default function LoginScreen({ navigation }) {
-  const { login, role } = useAuth();
+export default function LoginScreen() {
+  const { login } = useAuth();
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [loading, setLoading] = useState(false);
@@ -18,12 +21,13 @@ export default function LoginScreen({ navigation }) {
       setLoading(false);
       return;
     }
-
-    if (role === "admin") {
-      navigation.navigate("AdminHome");
+    const { role } = response;
+    if (role === "RestaurantAdmin") {
+      navigation.navigate("RestaurantAdminHome");
     } else {
       navigation.navigate("Home");
     }
+    setLoading(false);
   };
   return (
     <View style={styles.container}>

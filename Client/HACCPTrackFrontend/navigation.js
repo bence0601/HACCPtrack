@@ -8,7 +8,7 @@ import RegisterScreen from "./screens/AuthScreen/RegisterScreen";
 import HomeScreen from "./screens/Home/HomeScreen";
 import LoginScreen from "./screens/AuthScreen/LoginScreen";
 import { useAuth } from "./Auth/AuthContext";
-import AdminHomeScreen from "./screens/AdminScreens/AdminHomeScreen";
+import RestaurantAdminHomeScreen from "./screens/AdminScreens/RestaurantAdminHomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,8 +21,11 @@ export default function Navigation() {
         screenOptions={{ headerShown: false }}
       >
         {isSignedIn ? (
-          role === "admin" ? (
-            <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
+          role === "RestaurantAdmin" ? (
+            <Stack.Screen
+              name="RestaurantAdminHome"
+              component={RestaurantAdminHomeScreen}
+            />
           ) : (
             <Stack.Screen name="Home" component={HomeScreen} />
           )
