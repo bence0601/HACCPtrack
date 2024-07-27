@@ -26,8 +26,8 @@ namespace HACCPTrack.Services
         {
             var NewCheckItem = new CheckItem
             {
-                Id = checkItem.Id,
                 LogId = checkItem.LogId,
+                Log = await _context.Logs.FirstOrDefaultAsync(i => i.Id == checkItem.LogId),
                 Name = checkItem.Name,
                 Description = checkItem.Description,
                 PhotoPath = checkItem.PhotoPath,

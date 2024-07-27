@@ -4,7 +4,6 @@ namespace HACCPTrack.DTOs
 {
     public class CheckItemDTO
     {
-        public string Id { get; set; }
         public string LogId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
