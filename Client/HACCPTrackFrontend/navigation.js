@@ -8,11 +8,12 @@ import RegisterScreen from "./screens/AuthScreen/RegisterScreen";
 import HomeScreen from "./screens/Home/HomeScreen";
 import LoginScreen from "./screens/AuthScreen/LoginScreen";
 import { useAuth } from "./Auth/AuthContext";
+import AdminHomeScreen from "./screens/AdminScreens/AdminHomeScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, role } = useAuth();
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -20,7 +21,11 @@ export default function Navigation() {
         screenOptions={{ headerShown: false }}
       >
         {isSignedIn ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
+          userRole === "admin" ? (
+            <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
+          ) : (
+            <Stack.Screen name="Home" component={HomeScreen} />
+          )
         ) : (
           <>
             <Stack.Screen
