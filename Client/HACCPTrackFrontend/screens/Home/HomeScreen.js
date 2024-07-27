@@ -3,12 +3,18 @@ import React from "react";
 import { useAuth } from "../../Auth/AuthContext";
 
 export default function HomeScreen({ navigate }) {
-  const { email, logout } = useAuth();
+  const { email, role, logout } = useAuth();
 
   return (
     <View>
       <Text>HomeScreen</Text>
-      {email ? <Text>hello {email}!</Text> : <Text>Login</Text>}
+      {email ? (
+        <Text>
+          hello {email}! Role: {role}
+        </Text>
+      ) : (
+        <Text>Login</Text>
+      )}
       <Button title="Logout" onPress={() => logout()} />
     </View>
   );

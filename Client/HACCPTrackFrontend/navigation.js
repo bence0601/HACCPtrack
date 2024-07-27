@@ -21,7 +21,7 @@ export default function Navigation() {
         screenOptions={{ headerShown: false }}
       >
         {isSignedIn ? (
-          userRole === "admin" ? (
+          role === "admin" ? (
             <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
           ) : (
             <Stack.Screen name="Home" component={HomeScreen} />

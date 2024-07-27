@@ -4,7 +4,7 @@ import React from "react";
 export default function AdminHomeScreen() {
   return (
     <View>
-      <Text>AdminHomeScreen</Text>
+      <Text>This is AdminHomeScreen</Text>
     </View>
   );
 }

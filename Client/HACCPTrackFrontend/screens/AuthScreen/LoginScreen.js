@@ -1,12 +1,32 @@
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 import React, { useState } from "react";
+import { useAuth } from "../../Auth/AuthContext";
 
 export default function LoginScreen({ navigation }) {
+  const { login } = useAuth();
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [loading, setLoading] = useState(false);
-  const handleLogin = () => {};
+
+  const handleLogin = async () => {
+    console.log("logging in...");
+    setLoading(true);
+    const response = await login(email.value, password.value);
+    if (!response) {
+      console.log("error when logging in");
+      setLoading(false);
+      return;
+    }
+
+    const userRole = response.role;
+    console.log(userRole);
+    if (userRole === "admin") {
+      navigation.navigate("AdminHome");
+    } else {
+      navigation.navigate("Home");
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -43,6 +63,7 @@ export default function LoginScreen({ navigation }) {
           mode="contained"
           onPress={handleLogin}
           title={loading ? "Loading..." : "Login"}
+          disabled={loading}
         ></Button>
         <Button
           style={styles.button}
