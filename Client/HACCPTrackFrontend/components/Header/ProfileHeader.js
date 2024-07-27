@@ -6,7 +6,9 @@ const ProfileHeader = () => {
     <View style={styles.container}>
       <Image
         style={styles.profilePic}
-        source={{ uri: "https://example.com/profile-pic.png" }}
+        source={{
+          uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+        }}
       />
       <View>
         <Text style={styles.greeting}>Hi, Shahinur</Text>
