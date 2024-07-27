@@ -22,8 +22,6 @@ namespace HACCPTrack.Models
         {
             Id = Guid.NewGuid().ToString();
             CreatedAt = DateTime.UtcNow;
-            //ExpiryDate = CreatedAt.AddDays(1);
-            //RegenerationIntervalHours = 24;
             CheckItems = new List<CheckItem>();
         }
     }
