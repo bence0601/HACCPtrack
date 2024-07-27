@@ -1,63 +1,58 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { Button, TextInput } from "react-native-paper";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
-export default function RegisterScreen({ navigation }) {
+import React, { useState } from "react";
+
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: "", error: "" });
-  const [username, setUsername] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [loading, setLoading] = useState(false);
-
-  const handleRegister = () => {
-    console.log("Registering...");
-  };
-
+  const handleLogin = () => {};
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
+        label="Email"
+        returnKeyType="next"
         value={email.value}
         onChangeText={(text) => setEmail({ value: text, error: "" })}
-        keyboardType="email-address"
+        error={!!email.error}
+        errorText={email.error}
         autoCapitalize="none"
+        autoCompleteType="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
       />
       {email.error ? <Text style={styles.error}>{email.error}</Text> : null}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username.value}
-        onChangeText={(text) => setUsername({ value: text, error: "" })}
-        autoCapitalize="none"
-      />
-      {username.error ? (
-        <Text style={styles.error}>{username.error}</Text>
-      ) : null}
-
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry
+        returnKeyType="done"
         value={password.value}
         onChangeText={(text) => setPassword({ value: text, error: "" })}
-        autoCapitalize="none"
+        error={!!password.error}
+        errorText={password.error}
+        secureTextEntry
       />
       {password.error ? (
         <Text style={styles.error}>{password.error}</Text>
       ) : null}
-      <Button onPress={handleRegister} mode="contained" disabled={loading}>
-        {loading ? "Loading..." : "Register"}
-      </Button>
-      <Button
-        title="Go to Login"
-        onPress={() => navigation.navigate("Login")}
-      />
+      <View style={styles.buttonContainer}>
+        <Button
+          mode="contained"
+          onPress={handleLogin}
+          title={loading ? "Loading..." : "Login"}
+        ></Button>
+        <Button
+          style={styles.button}
+          title="Go to Register"
+          onPress={() => navigation.navigate("Register")}
+        />
+      </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -72,13 +67,14 @@ const styles = StyleSheet.create({
     width: "80%",
     marginBottom: 10,
     padding: 10,
-    borderColor: "#ccc",
     borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 5,
   },
-  error: {
-    color: "red",
+  buttonContainer: {
+    width: "80%",
     marginBottom: 10,
+    justifyContent: "space-between",
   },
   button: {
     flex: 1,
@@ -87,5 +83,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 5,
+  },
+  continue: {
+    position: "absolute",
+    bottom: 60,
+  },
+  error: {
+    color: "red",
+    marginBottom: 5,
   },
 });

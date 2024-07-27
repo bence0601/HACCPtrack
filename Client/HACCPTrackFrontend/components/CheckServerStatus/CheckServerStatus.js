@@ -5,7 +5,7 @@ import API_BASE_URL from "../../config";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CheckServerStatus() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -17,6 +17,8 @@ export default function CheckServerStatus() {
           if (data.status === "ok") {
             console.log("Server is now listening. (first fetch is working)");
             setLoading(false);
+          } else {
+            console.error("Unexpected response data:", data);
           }
         } else {
           console.error("Server returned an error:", response.status);
@@ -36,9 +38,12 @@ export default function CheckServerStatus() {
           <ActivityIndicator size="large" color="#5b5b5b" />
         </>
       ) : (
-        <Text onPress={() => navigation.navigate("Register")}>
-          Server is up and running
-        </Text>
+        <>
+          <Text onPress={() => navigation.navigate("Register")}>
+            Go to Register
+          </Text>
+          <Text onPress={() => navigation.navigate("Login")}>Go to Login</Text>
+        </>
       )}
     </View>
   );

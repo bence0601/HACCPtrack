@@ -4,6 +4,7 @@ using HACCPTrack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HACCPTrack.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240726162047_UserRestaurant")]
+    partial class UserRestaurant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,8 +31,13 @@ namespace HACCPTrack.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InputValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsChecked")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LogId")
                         .IsRequired()
@@ -40,27 +48,16 @@ namespace HACCPTrack.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhotoPath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(34)
-                        .HasColumnType("nvarchar(34)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LogId");
 
                     b.ToTable("CheckItems");
-
-                    b.HasDiscriminator<string>("Type").HasValue("CheckItem");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("HACCPTrack.Models.Invites.Invite", b =>
@@ -378,27 +375,6 @@ namespace HACCPTrack.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("HACCPTrack.Models.CheckItemWithCheckBox", b =>
-                {
-                    b.HasBaseType("HACCPTrack.Models.CheckItem");
-
-                    b.Property<bool>("isChecked")
-                        .HasColumnType("bit");
-
-                    b.HasDiscriminator().HasValue("CheckItemWithCheckBox");
-                });
-
-            modelBuilder.Entity("HACCPTrack.Models.CheckItemWithInputField", b =>
-                {
-                    b.HasBaseType("HACCPTrack.Models.CheckItem");
-
-                    b.Property<string>("Inputvalue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("CheckItemWithInputField");
                 });
 
             modelBuilder.Entity("HACCPTrack.Models.CheckItem", b =>
