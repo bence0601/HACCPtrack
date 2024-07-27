@@ -31,6 +31,31 @@ namespace HACCPTrack.Controllers
                 var createdRestaurant = await _restaurantService.CreateRestaurantAsync(restaurant);
                 return CreatedAtAction(nameof(GetRestaurants), new { id = createdRestaurant.Id }, createdRestaurant);
             }
+
+            
+            [HttpGet("/GetRestaurantById")]
+            public async Task<ActionResult<Restaurant>> GetRestaurantByID(string id)
+            {
+                var restaurant = await _restaurantService.GetRestaurantByIdAsync(id);
+                return Ok(restaurant);
+            }
+
+
+            [HttpDelete]
+            public async Task<ActionResult<IEnumerable<Restaurant>>> DeleteRestaurantByID(string id)
+        {
+            var deletedRestaurant = await _restaurantService.DeleteRestaurantByIdAsync(id);
+            return Ok(deletedRestaurant);
+        }
+
+
+
+            [HttpPut]
+            public async Task<ActionResult<Restaurant>> UpdateRestaurant(string id,RestaurantDTO restaurant)
+        {
+            var UpdatedRestaurant = await _restaurantService.UpdateRestaurantAsync(id,restaurant);
+            return Ok(UpdatedRestaurant);
+        }
         }
 }
 
