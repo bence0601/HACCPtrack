@@ -6,11 +6,11 @@ import TaskList from "../../components/TaskList";
 import { useAuth } from "../../Auth/AuthContext";
 
 export default function RestaurantAdminHomeScreen() {
-  const { logout } = useAuth();
+  const { userName } = useAuth();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <ProfileHeader />
+        <ProfileHeader userName={userName} />
         <TaskSummary />
         <TaskList />
       </ScrollView>

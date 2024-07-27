@@ -1,7 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 
-const ProfileHeader = () => {
+const ProfileHeader = ({ userName }) => {
+  const currentDate = new Date().toLocaleDateString("hu-HU", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <View style={styles.container}>
       <Image
@@ -11,8 +17,8 @@ const ProfileHeader = () => {
         }}
       />
       <View>
-        <Text style={styles.greeting}>Hi, Shahinur</Text>
-        <Text style={styles.date}>01 Jan 2024</Text>
+        <Text style={styles.greeting}>Hi, {userName}</Text>
+        <Text style={styles.date}>{currentDate}</Text>
       </View>
       <View style={styles.notificationIcon}>{/* Notification Icon */}</View>
     </View>
