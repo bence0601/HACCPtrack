@@ -3,6 +3,7 @@ using HACCPTrack.Services;
 using HACCPTrack.Services.Authentication;
 using HACCPTrack.Services.CheckItemServices;
 using HACCPTrack.Services.InviteLinks;
+using HACCPTrack.Services.LogServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -71,6 +72,7 @@ app.Run();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<ICheckItemService, CheckItemService>();
+        builder.Services.AddScoped<ILogService, LogService>();
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<DataContext>()
             .AddDefaultTokenProviders();
