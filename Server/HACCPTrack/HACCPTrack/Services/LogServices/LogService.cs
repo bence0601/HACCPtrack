@@ -52,7 +52,7 @@ namespace HACCPTrack.Services.LogServices
             catch (Exception ex)
             {
 
-                throw new Exception("An error occurred while getting the information of  a restaurant.", ex);
+                throw new Exception("An error occurred while getting the information of a Log.", ex);
             }
 
 
