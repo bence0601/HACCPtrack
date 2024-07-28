@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("role", role);
 
-        return true;
+        return { email, userName, token, role };
       } else {
         console.error("Login failed:", response.status);
         return false;

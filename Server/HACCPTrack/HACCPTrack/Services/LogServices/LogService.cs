@@ -13,7 +13,7 @@ namespace HACCPTrack.Services.LogServices
         {
             _context = context;
         }
-
+        
         public async Task<Log> CreateLogsAsync(LogDTO log)
         {
 
@@ -45,7 +45,17 @@ namespace HACCPTrack.Services.LogServices
 
         public async Task<Log> GetLogByIdAsync(string id)
         {
-            return await _context.Logs.FirstAsync(r => r.Id == id);
+            try
+            {
+                return await _context.Logs.FirstOrDefaultAsync(r => r.Id == id);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("An error occurred while getting the information of  a restaurant.", ex);
+            }
+
+
         }
     }
 }
