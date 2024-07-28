@@ -34,7 +34,7 @@ namespace HACCPTrack.Controllers
         public async Task<ActionResult<CheckItem>> GetLogsById(string id)
         {
             var checkItem = await _logservice.GetLogByIdAsync(id);
-            return Ok(checkItem);
+            return Ok(checkItem); 
         }
         }
 }
