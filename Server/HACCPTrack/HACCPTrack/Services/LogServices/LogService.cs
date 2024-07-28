@@ -43,5 +43,9 @@ namespace HACCPTrack.Services.LogServices
             return await _context.Logs.ToListAsync();
         }
 
+        public async Task<Log> GetLogByIdAsync(string id)
+        {
+            return await _context.Logs.FirstAsync(r => r.Id == id);
+        }
     }
 }
