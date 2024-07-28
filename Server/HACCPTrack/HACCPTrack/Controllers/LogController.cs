@@ -30,6 +30,12 @@ namespace HACCPTrack.Controllers
                 var createdLog = await _logservice.CreateLogsAsync(log);
                 return CreatedAtAction(nameof(GetLogs), new { id = createdLog.Id }, createdLog);
             }
+        [HttpGet("GetLogsById")]
+        public async Task<ActionResult<CheckItem>> GetLogsById(string id)
+        {
+            var checkItem = await _logservice.GetLogByIdAsync(id);
+            return Ok(checkItem); 
+        }
         }
 }
 
