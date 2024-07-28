@@ -7,6 +7,6 @@ namespace HACCPTrack.Services.LogServices
     {
         public Task<List<Log>> GetAllLogs();
         public Task<Log> CreateLogsAsync(LogDTO log);
-        public Task<Log> GetLogByIdAsync(string id);    
+        public Task<Log> GetLogByIdAsync(string id);
     }
 }

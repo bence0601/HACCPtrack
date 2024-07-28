@@ -39,6 +39,9 @@ namespace HACCPTrack.Services
             return NewCheckItem;
         }
 
-  
+        public async Task<CheckItem> GetCheckListByIdAsync(string id)
+        {
+            return await _context.CheckItems.FirstAsync(i => i.Id == id);
+        }
     }
 }

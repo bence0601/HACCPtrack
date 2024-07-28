@@ -20,8 +20,8 @@ namespace HACCPTrack.Controllers
             [HttpGet]
             public async Task<ActionResult<IEnumerable<Log>>> GetLogs()
             {
-                var checkItems = await _logservice.GetAllLogs();
-                return Ok(checkItems);
+                var checkLogs = await _logservice.GetAllLogs();
+                return Ok(checkLogs);
             }
 
             [HttpPost]
@@ -30,11 +30,11 @@ namespace HACCPTrack.Controllers
                 var createdLog = await _logservice.CreateLogsAsync(log);
                 return CreatedAtAction(nameof(GetLogs), new { id = createdLog.Id }, createdLog);
             }
-        [HttpGet("GetLogsById")]
-        public async Task<ActionResult<CheckItem>> GetLogsById(string id)
+        [HttpGet("GetLogById")]
+        public async Task<ActionResult<CheckItem>> GetLogById(string id)
         {
-            var checkItem = await _logservice.GetLogByIdAsync(id);
-            return Ok(checkItem); 
+            var checkLog = await _logservice.GetLogByIdAsync(id);
+            return Ok(checkLog);
         }
         }
 }

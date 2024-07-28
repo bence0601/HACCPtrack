@@ -7,5 +7,7 @@ namespace HACCPTrack.Services.CheckItemServices
     {
         public Task<List<CheckItem>> GetAllCheckItemsAsync();
         public Task<CheckItem> CreateCheckItemAsync(CheckItemDTO checkItem);
+
+        public Task<CheckItem> GetCheckListByIdAsync(string id);
     }
 }

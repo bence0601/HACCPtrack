@@ -32,5 +32,12 @@ namespace HACCPTrack.Controllers
             var createdCheckItem = await _checkItemService.CreateCheckItemAsync(checkItem);
             return CreatedAtAction(nameof(GetCheckItems), new { id = createdCheckItem.Id }, createdCheckItem);
         }
+
+        [HttpGet("GetCheckItemById")]
+        public async Task<ActionResult<CheckItem>> GetCheckItemById(string id)
+        {
+            var checkItem = await _checkItemService.GetCheckListByIdAsync(id);
+            return Ok(checkItem);
+        }
     }
 }
